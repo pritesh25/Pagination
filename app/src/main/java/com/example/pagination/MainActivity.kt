@@ -1,19 +1,16 @@
 package com.example.pagination
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.LinearLayout
-import com.kotlab.supreme.paging.FeedPagedAdapter
-import com.kotlab.supreme.paging.FeedViewModel
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.pagination.paging.FeedPagedAdapter
+import com.example.pagination.paging.FeedViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var feedViewModel: FeedViewModel
-    private lateinit var feedListAdapter: FeedPagedAdapter
+    private val feedViewModel: FeedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +21,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        feedViewModel = ViewModelProviders.of(this).get(FeedViewModel::class.java)
-        feedListAdapter = FeedPagedAdapter(applicationContext)
+        val feedListAdapter = FeedPagedAdapter(applicationContext)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
-        feedViewModel.itemPagedList.observe(this, Observer {
+        recyclerView.layoutManager =
+            LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+        feedViewModel.itemPagedList.observe(this, {
             feedListAdapter.submitList(it)
         })
         recyclerView.adapter = feedListAdapter

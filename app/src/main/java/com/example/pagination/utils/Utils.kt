@@ -1,4 +1,4 @@
-package com.example.pagination
+package com.example.pagination.utils
 
 import android.content.Context
 import android.util.Log
@@ -64,7 +64,7 @@ class Utils {
             }
         }
 
-        fun getData(cxt: Context, key: String): String {
+        fun getData(cxt: Context, key: String): String? {
             return cxt.getSharedPreferences(PREF_NAME, 0).getString(key, "")
         }
 

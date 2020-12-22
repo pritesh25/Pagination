@@ -1,27 +1,30 @@
-package com.kotlab.supreme.paging
+package com.example.pagination.paging
 
-import android.arch.paging.PagedListAdapter
+import androidx.paging.PagedListAdapter
 import android.content.Context
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.pagination.R
-import com.kotlab.supreme.paging.response.Article
+import com.example.pagination.paging.response.NewsModel
+import com.example.pagination.paging.response.NewsModel.Article
 
-class FeedPagedAdapter(private var cxt: Context?) : PagedListAdapter<Article, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class FeedPagedAdapter(private var cxt: Context?) : PagedListAdapter<NewsModel.Article, RecyclerView.ViewHolder>(
+    DIFF_CALLBACK
+) {
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Article>() {
-            override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NewsModel.Article>() {
+            override fun areItemsTheSame(oldItem: NewsModel.Article, newItem: NewsModel.Article): Boolean {
                 return oldItem.url === newItem.url
             }
 
-            override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+            override fun areContentsTheSame(oldItem: NewsModel.Article, newItem: NewsModel.Article): Boolean {
                 return oldItem == newItem
             }
         }
@@ -34,12 +37,13 @@ class FeedPagedAdapter(private var cxt: Context?) : PagedListAdapter<Article, Re
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
 
-        val feedModel: Article = this.getItem(p1)!!
+        val feedModel: NewsModel.Article = this.getItem(p1)!!
 
         if (p0 is MyViewHolder) {
             p0.tvTitle.text = feedModel.title
             p0.tvDescription.text = feedModel.description
-            Glide.with(cxt!!).load(feedModel.urlToImage).into(p0.ivUrlToImage)
+            //Glide.with(cxt!!).load(feedModel.urlToImage).into(p0.ivUrlToImage)
+            p0.ivUrlToImage.load(feedModel.urlToImage)
         }
     }
 

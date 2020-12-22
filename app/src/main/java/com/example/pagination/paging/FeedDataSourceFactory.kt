@@ -1,13 +1,13 @@
-package com.kotlab.supreme.paging
+package com.example.pagination.paging
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.DataSource
-import android.arch.paging.PageKeyedDataSource
-import com.kotlab.supreme.paging.response.Article
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
+import androidx.paging.PageKeyedDataSource
+import com.example.pagination.paging.response.NewsModel
 
-class FeedDataSourceFactory : DataSource.Factory<Int, Article>() {
+class FeedDataSourceFactory : DataSource.Factory<Int, NewsModel.Article>() {
 
-    private val itemLiveDataSource = MutableLiveData<PageKeyedDataSource<Int, Article>>()
+    private val itemLiveDataSource = MutableLiveData<PageKeyedDataSource<Int, NewsModel.Article>>()
 
     override fun create(): FeedDataSource {
         val itemDataSource = FeedDataSource()
@@ -15,7 +15,7 @@ class FeedDataSourceFactory : DataSource.Factory<Int, Article>() {
         return itemDataSource
     }
 
-    fun getItemLiveDataSource(): MutableLiveData<PageKeyedDataSource<Int, Article>> {
+    fun getItemLiveDataSource(): MutableLiveData<PageKeyedDataSource<Int, NewsModel.Article>> {
         return itemLiveDataSource
     }
 

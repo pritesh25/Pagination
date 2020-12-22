@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <com.example.pagination.SquareImageView
+    <com.example.pagination.utils.SquareImageView
             android:id="@+id/iv_urlToImage"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background"

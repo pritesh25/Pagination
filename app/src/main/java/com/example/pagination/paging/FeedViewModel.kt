@@ -1,16 +1,16 @@
-package com.kotlab.supreme.paging
+package com.example.pagination.paging
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PageKeyedDataSource
-import android.arch.paging.PagedList
-import com.kotlab.supreme.paging.response.Article
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagedList
+import com.example.pagination.paging.response.NewsModel
 
 class FeedViewModel : ViewModel() {
 
-    var itemPagedList: LiveData<PagedList<Article>>
-    private var liveDataSource: LiveData<PageKeyedDataSource<Int, Article>>
+    var itemPagedList: LiveData<PagedList<NewsModel.Article>>
+    private var liveDataSource: LiveData<PageKeyedDataSource<Int, NewsModel.Article>>
 
 
     init {

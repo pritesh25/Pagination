@@ -1,19 +1,20 @@
-package com.kotlab.supreme.paging
+package com.example.pagination.paging
 
-import android.arch.paging.PageKeyedDataSource
 import android.util.Log
-import com.example.pagination.RetrofitClient
-import com.example.pagination.Utils
-import com.example.pagination.Utils.Companion.NEWS_URL
-import com.kotlab.supreme.paging.response.ApiResponse
-import com.kotlab.supreme.paging.response.Article
+import androidx.paging.PageKeyedDataSource
+import com.example.pagination.utils.RetrofitClient
+import com.example.pagination.utils.Utils
+import com.example.pagination.utils.Utils.Companion.NEWS_URL
+import com.example.pagination.paging.response.NewsModel
+import com.example.pagination.utils.ApiEndpoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FeedDataSource : PageKeyedDataSource<Int, Article>() {
+class FeedDataSource : PageKeyedDataSource<Int, NewsModel.Article>() {
 
     private val mTag = FeedDataSource::class.java.simpleName
+    private val apiServices = RetrofitClient().sampleTest(NEWS_URL)?.create(ApiEndpoint::class.java)
 
     companion object {
         private const val PAGE: Int = 1
@@ -22,63 +23,64 @@ class FeedDataSource : PageKeyedDataSource<Int, Article>() {
 
     }
 
-    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Article>) {
+    override fun loadInitial(
+        params: LoadInitialParams<Int>,
+        callback: LoadInitialCallback<Int, NewsModel.Article>
+    ) {
         Log.d(mTag, "loadInitial called")
-        val apiServices = RetrofitClient().sampleTest(NEWS_URL).create(RetrofitClient.Api::class.java)
-        val result: Call<ApiResponse> = apiServices.getTopHeadlinesEndless(PAGE, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
-        result.enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
 
-                if (response.body() != null) {
-                    callback.onResult(response.body()!!.articles!!, null, PAGE + 1)
+        apiServices?.getTopHeadlinesEndless(PAGE, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
+            ?.enqueue(object : Callback<NewsModel?> {
+                override fun onResponse(call: Call<NewsModel?>, response: Response<NewsModel?>) {
+                    response.body()?.let {
+                        callback.onResult(it.articles!!, null, PAGE + 1)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                override fun onFailure(call: Call<NewsModel?>, t: Throwable) {
 
-            }
-        })
+                }
+            })
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Article>) {
+    override fun loadBefore(
+        params: LoadParams<Int>,
+        callback: LoadCallback<Int, NewsModel.Article>
+    ) {
 
         Log.d(mTag, "loadBefore called")
-        val apiServices = RetrofitClient().sampleTest(NEWS_URL).create(RetrofitClient.Api::class.java)
-        val result: Call<ApiResponse> =
-            apiServices.getTopHeadlinesEndless(params.key, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
-        result.enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-
-                val adjacentKey = (if (params.key > 1) params.key - 1 else null)!!.toInt()
-                if (response.body() != null) {
-                    //val key = if (params.key > 1) params.key - 1 else null
-                    callback.onResult(response.body()!!.articles!!, adjacentKey)
+        apiServices?.getTopHeadlinesEndless(params.key, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
+            ?.enqueue(object : Callback<NewsModel?> {
+                override fun onResponse(call: Call<NewsModel?>, response: Response<NewsModel?>) {
+                    val adjacentKey = (if (params.key > 1) params.key - 1 else null)!!.toInt()
+                    response.body()?.let {
+                        callback.onResult(it.articles!!, adjacentKey)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                override fun onFailure(call: Call<NewsModel?>, t: Throwable) {
 
-            }
-        })
+                }
+            })
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Article>) {
+    override fun loadAfter(
+        params: LoadParams<Int>,
+        callback: LoadCallback<Int, NewsModel.Article>
+    ) {
 
         Log.d(mTag, "loadAfter called")
 
-        val apiServices = RetrofitClient().sampleTest(NEWS_URL).create(RetrofitClient.Api::class.java)
-        val result: Call<ApiResponse> =
-            apiServices.getTopHeadlinesEndless(params.key, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
-        result.enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-
-                if (response.body() != null) {
-                    callback.onResult(response.body()!!.articles!!, params.key + 1)
+        apiServices?.getTopHeadlinesEndless(params.key, PAGE_SIZE, COUNTRY, Utils.KEY_NEWS)
+            ?.enqueue(object : Callback<NewsModel?> {
+                override fun onResponse(call: Call<NewsModel?>, response: Response<NewsModel?>) {
+                    response.body()?.let {
+                        callback.onResult(it.articles!!, params.key + 1)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-            }
-        })
+                override fun onFailure(call: Call<NewsModel?>, t: Throwable) {
+                }
+            })
     }
 }
